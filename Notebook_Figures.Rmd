@@ -13,6 +13,7 @@ dat <- read_csv('RawData/Treening.csv')
 ggplot(data = dat, aes(x = hours, y = loss)) +
   geom_point()+
   geom_smooth(method = 'lm')+
-  theme_bw()
+  theme_bw()+
+  theme()
 ```
 
