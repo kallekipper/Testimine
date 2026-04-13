@@ -16,3 +16,86 @@ ggplot(data = dat, aes(x = hours, y = loss)) +
   theme_bw()+
   theme()
 ```
+
+```{r}
+# Descriptive statistics
+dat %>%
+  group_by(prog, sex) %>%
+  summarise(
+    n = n(),
+    mean_hours = round(mean(hours), 2),
+    mean_loss = round(mean(loss), 2),
+    mean_effort = round(mean(effort), 2),
+    sd_hours = round(sd(hours), 2),
+    sd_loss = round(sd(loss), 2)
+  )
+```
+
+```{r, message=FALSE, fig.width=8, fig.height=4}
+# Distribution of weight loss and hours by program
+dat %>%
+  pivot_longer(cols = c(hours, loss), names_to = "variable", values_to = "value") %>%
+  ggplot(aes(x = value, fill = prog)) +
+  geom_histogram(alpha = 0.6, bins = 30, position = "identity") +
+  facet_wrap(~variable, scales = "free") +
+  theme_bw()
+```
+```{r, message=FALSE, fig.width=8, fig.height=4}
+# Weight loss by program and sex
+ggplot(dat, aes(x = prog, y = loss, fill = sex)) +
+  geom_boxplot() +
+  theme_bw()
+```
+```{r, message=FALSE, fig.width=8, fig.height=5}
+# Hours vs loss by program and sex
+ggplot(dat, aes(x = hours, y = loss, color = sex)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  facet_wrap(~prog) +
+  theme_bw()
+```
+```{r, message=FALSE}
+# Model 1 - simple regression
+m1 <- lm(loss ~ hours, data = dat)
+summary(m1)
+```
+```{r, message=FALSE}
+# Model 2 - with covariates
+m2 <- lm(loss ~ hours + prog + sex + effort, data = dat)
+summary(m2)
+```
+```{r, message=FALSE}
+# Model 3 - with interaction
+m3 <- lm(loss ~ hours + prog + sex + effort + prog*sex, data = dat)
+summary(m3)
+```
+```{r, message=FALSE}
+# Model comparison
+anova(m1, m2, m3)
+```
+```{r, message=FALSE, fig.width=8, fig.height=6}
+# Model diagnostics
+par(mfrow = c(2, 2))
+plot(m3)
+```
+```{r, message=FALSE}
+# AIC comparison
+AIC(m1, m2, m3)
+```
+```{r, message=FALSE}
+library(gtsummary)
+
+# Summary table for Model 3
+tbl_regression(m3) %>%
+  bold_p() %>%
+  bold_labels() 
+```
+
+```{r, message=FALSE}
+library(broom)
+
+# Model 3 results with confidence intervals
+tidy(m3, conf.int = TRUE) %>%
+  mutate(across(where(is.numeric), ~round(., 3)))
+```
+
