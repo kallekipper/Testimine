@@ -16,4 +16,3 @@ ggplot(data = dat, aes(x = hours, y = loss)) +
   theme_bw()+
   theme()
 ```
-
