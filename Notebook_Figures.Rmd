@@ -1,0 +1,16 @@
+---
+title: "R Notebook"
+---
+
+```{r,message=TRUE,warning=FALSE}
+library(tidyverse)
+```
+
+```{r,message=FALSE, fig.width=4,fig.height=3}
+dat <- read_csv('RawData/Treening.csv')
+
+# draw a graph
+ggplot(data = dat, aes(x = hours, y = loss)) +
+  geom_point()
+```
+
