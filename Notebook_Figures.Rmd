@@ -12,6 +12,7 @@ dat <- read_csv('RawData/Treening.csv')
 # draw a graph
 ggplot(data = dat, aes(x = hours, y = loss)) +
   geom_point()+
-  geom_smooth()
+  geom_smooth(method = 'lm')+
+  themwe_bw()
 ```
 
