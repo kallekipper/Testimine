@@ -96,6 +96,7 @@ library(broom)
 
 # Model 3 results with confidence intervals
 tidy(m3, conf.int = TRUE) %>%
-  mutate(across(where(is.numeric), ~round(., 3)))
+  mutate(across(where(is.numeric), ~round(., 3))) %>%
+  select(term,estimate,conf.low,conf.high)
 ```
 
